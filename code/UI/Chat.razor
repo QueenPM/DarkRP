@@ -94,8 +94,11 @@
     }
 
     [Broadcast]
-    public void AddText( string message )
+    public void AddText( string message, bool clientOnly = false )
     {
+        // Return if it's a client-only message and the caller isn't the local client
+        if (clientOnly && Rpc.Caller != Connection.Local) return;
+        
         message = message.Truncate( 300 );
 
         if (string.IsNullOrWhiteSpace(message))
@@ -115,8 +118,11 @@
 	}
 
     [Broadcast] // todo: only from host/owner
-    public void AddSystemText(string message)
+    public void AddSystemText( string message, bool clientOnly = false)
     {
+        // Return if it's a client-only message and the caller isn't the local client
+        if (clientOnly && Rpc.Caller != Connection.Local) return;
+
         message = message.Truncate(300);
 
         if (string.IsNullOrWhiteSpace(message))
@@ -153,11 +159,11 @@
             switch (command)
             {
                 case "help":
-                    AddSystemText("Available commands: /help, /clear, /lorem [count]");
+                    AddSystemText("Available commands: /help, /clear, /lorem [count]", true);
                     return true;
                 case "clear":
                     Entries.Clear();
-                    AddSystemText("Chat has been cleared");
+                    AddSystemText("Chat has been cleared", true);
                     return true;
                 case "lorem":
                     // Loop X times for args 1
@@ -166,19 +172,19 @@
                     {
                         if (!int.TryParse(args[0], out count))
                         {
-                            AddText("Invalid argument: " + args[0]);
+                            AddText("Invalid argument: " + args[0], true);
                             return true;
                         }
                     }
                     if (count > 10)
                     {
-                        AddSystemText("You can only generate up to 10 lorem ipsum messages at a time");
+                        AddSystemText("You can only generate up to 10 lorem ipsum messages at a time", true);
                         return true;
                     }
 
                     for (var i = 0; i < count; i++)
                     {
-                        AddText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+                        AddText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.", true);
                     }
                     return true;
                 default:
