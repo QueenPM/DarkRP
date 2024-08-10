@@ -1,6 +1,7 @@
 ﻿@using Sandbox;
 @using Sandbox.UI;
 @using System;
+@using Commands;
 @inherits PanelComponent
 @implements Component.INetworkListener
 
@@ -45,6 +46,51 @@
         public string timestamp { get; } = DateTime.Now.ToString("HH:mm:ss");
     }
     List<Entry> Messages = new();
+    ConfigManager ConfigManager;
+    protected override void OnStart()
+    {
+        ConfigManager = ConfigManagerHelper.GetConfigManager(Scene);
+        if (ConfigManager is null)
+        {
+            Log.Error( "Config Manager not found" );
+            return;
+        }
+
+
+        ConfigManager.Commands.RegisterCommand(new Command(
+            name: "clear",
+            description: "Clears the chat",
+            permissionLevel: 0,
+            commandFunction: () =>
+            {
+                Messages.Clear();
+                NewSystemMessage("Chat has been cleared", true);
+                return true;
+            }
+        ));
+
+        ConfigManager.Commands.RegisterCommand(new Command(
+            name: "lorem",
+            description: "Spams the chat with lorem ipsum X times.",
+            permissionLevel: 0,
+            commandFunction: () => true,
+            commandFunctionWithArgs: (args) =>
+            {
+                if (args.Length == 0 || !int.TryParse(args[0], out int count))
+                {
+                    Console.WriteLine("Invalid argument. Usage: lorem <count>");
+                    return false;
+                }
+
+                for (int i = 0; i < count; i++)
+                {
+                    Console.WriteLine("Lorem ipsum dolor sit amet.");
+                }
+                Console.WriteLine($"Chat has been spammed with lorem ipsum {count} times.");
+                return true;
+            }
+        ));
+    }
 
     protected override void OnUpdate()
     {
@@ -159,46 +205,20 @@
     // TODO Move this to a separate class & make it more extensible
     public bool CheckCommand(string message)
     {
+        if (ConfigManager is null) return false;
         if (message.StartsWith("/"))
         {
             var parts = message.Split(" ");
             var command = parts[0].Substring(1).ToLower();
             var args = parts.Skip(1).ToArray();
-
-            switch (command)
+            try
             {
-                case "help":
-                    NewSystemMessage("Available commands: /help, /clear, /lorem [count]", true);
-                    return true;
-                case "clear":
-                    Messages.Clear();
-                    NewSystemMessage("Chat has been cleared", true);
-                    return true;
-                case "lorem":
-                    // Loop X times for args 1
-                    var count = 1;
-                    if (args.Length > 0)
-                    {
-                        if (!int.TryParse(args[0], out count))
-                        {
-                            NewUserMessage("Invalid argument: " + args[0], true);
-                            return true;
-                        }
-                    }
-                    if (count > 10)
-                    {
-                        NewSystemMessage("You can only generate up to 10 lorem ipsum messages at a time", true);
-                        return true;
-                    }
-
-                    for (var i = 0; i < count; i++)
-                    {
-                        NewUserMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit.", true);
-                    }
-                    return true;
-                default:
-                    NewSystemMessage($"Unknown command: {command}");
-                    return true;
+                ConfigManager.Commands.ExecuteCommand(command, args);
+                return true;
+            }catch (Exception e)
+            {
+                Log.Error( e.Message );
+                return false;
             }
         }
 
