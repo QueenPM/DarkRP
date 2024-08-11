@@ -1,9 +1,13 @@
 @using Sandbox;
 @using Sandbox.UI;
 @inherits PanelComponent
-
 <root>
-    <div class="title">@(PrinterPrefab.Components.Get<PrinterLogic>().PrinterCurrentMoney) $</div>
+    <div class="title-container">
+        <h1 class="title">Bronze Money Printer</h1>
+    </div>
+    <div class="printer-stats">
+        <div class="money">@((printerLogic?.PrinterCurrentMoney.ToString() ?? "N/A") + " $")</div>
+    </div>
 </root>
 
 @code
@@ -12,11 +16,16 @@
     [Property] GameObject PrinterPrefab { get; set; }
 
 
-   // [Property] public GameObject Printer { get; set }
+    PrinterLogic printerLogic;
+    protected override void OnStart()
+    {
+        printerLogic = PrinterPrefab.Components.Get<PrinterLogic>();
+    }
 
 
     /// <summary>
     /// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
     /// </summary>
-    protected override int BuildHash() => System.HashCode.Combine(PrinterPrefab.Components.Get<PrinterLogic>().PrinterCurrentMoney);
+    protected override int BuildHash() =>
+    System.HashCode.Combine(PrinterPrefab.Components.Get<PrinterLogic>().PrinterCurrentMoney);
 }

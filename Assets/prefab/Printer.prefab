@@ -3,41 +3,10 @@
     "__guid": "d9722984-8e27-467c-bf69-0aed3358f138",
     "Flags": 0,
     "Name": "printer",
-    "Scale": "0.5,0.7,0.4",
-    "Tags": "printer,interact",
+    "Tags": "interact,printer",
     "Enabled": true,
     "NetworkMode": 1,
     "Components": [
-      {
-        "__type": "Sandbox.ModelRenderer",
-        "__guid": "5c087b61-794a-43fc-8423-1ac87bbdbc01",
-        "BodyGroups": 18446744073709551615,
-        "Model": "models/dev/box.vmdl",
-        "RenderType": "On",
-        "Tint": "0.04186,0.02775,0.00156,1"
-      },
-      {
-        "__type": "Sandbox.BoxCollider",
-        "__guid": "3de3e14d-166d-4e9b-b4e9-9cf4f05c9e60",
-        "Center": "0,0,0",
-        "IsTrigger": false,
-        "Scale": "50,50,50",
-        "Static": false
-      },
-      {
-        "__type": "Sandbox.Rigidbody",
-        "__guid": "e18c4834-4606-489e-b986-b64aedbad9bb",
-        "AngularDamping": 0,
-        "Gravity": true,
-        "LinearDamping": 0,
-        "Locking": {},
-        "MassCenterOverride": "0,0,0",
-        "MassOverride": 0,
-        "MotionEnabled": true,
-        "OverrideMassCenter": false,
-        "RigidbodyFlags": 0,
-        "StartAsleep": false
-      },
       {
         "__type": "Sandbox.SoundPointComponent",
         "__guid": "419ee3ac-e54c-45f6-91ec-ba30e3111c66",
@@ -81,14 +50,53 @@
         "Silver": "28.58,28.58,28.58,1",
         "SilverPrice": 1200,
         "SilverTimer": 30
+      },
+      {
+        "__type": "Sandbox.Rigidbody",
+        "__guid": "1a5d96ea-996e-42a0-8768-98d48b98c6cf",
+        "AngularDamping": 0,
+        "Gravity": true,
+        "LinearDamping": 0,
+        "Locking": {},
+        "MassCenterOverride": "0,0,0",
+        "MassOverride": 0,
+        "MotionEnabled": true,
+        "OverrideMassCenter": false,
+        "RigidbodyFlags": 0,
+        "StartAsleep": false
+      },
+      {
+        "__type": "Sandbox.BoxCollider",
+        "__guid": "7619f61e-a9fc-4600-b9c2-0154928b4a64",
+        "Center": "0,0,0",
+        "IsTrigger": false,
+        "Scale": "50,40,10",
+        "Static": false
       }
     ],
     "Children": [
       {
+        "__guid": "4c0a8a02-7642-4c2b-b693-b15ddd81fadf",
+        "Flags": 0,
+        "Name": "Model",
+        "Scale": "1,0.8,0.2",
+        "Enabled": true,
+        "Components": [
+          {
+            "__type": "Sandbox.ModelRenderer",
+            "__guid": "105acc6f-3850-4854-a35c-7bf3b7a2cab2",
+            "BodyGroups": 18446744073709551615,
+            "Model": "models/dev/box.vmdl",
+            "RenderType": "On",
+            "Tint": "0.04186,0.02775,0.00156,1"
+          }
+        ]
+      },
+      {
         "__guid": "a5cd5a30-2083-43c0-a2d7-a09c3e78d29d",
         "Flags": 0,
         "Name": "World",
-        "Position": "0.2549524,0,25.1883",
+        "Position": "0.2549492,0,5.1",
         "Rotation": "0,-0.7071067,0,0.7071068",
         "Enabled": true,
         "NetworkMode": 1,
@@ -99,8 +107,8 @@
             "HorizontalAlign": "Center",
             "InteractionRange": 1000,
             "LookAtCamera": false,
-            "PanelSize": "800,800",
-            "RenderScale": 2,
+            "PanelSize": "750,950",
+            "RenderScale": 1,
             "VerticalAlign": "Center"
           },
           {
