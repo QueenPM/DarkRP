@@ -1,0 +1,46 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using GameSystems;
+@using GameSystems.Player;
+@using System.Threading.Tasks;
+@using Entity.Interactable.Props;
+@using Entity.Interactable.Printer;
+@using System.Text.RegularExpressions;
+@inherits PanelComponent;
+@attribute [StyleSheet( "../MenuStyle.scss" )]
+
+@page
+<root>
+  <div class="section">
+      <div class="section-title">Information</div>
+      <div class="section-contents">
+
+          <div class="info" style="color: #556B2F;">
+              <h1>Completed</h1>
+              <p>@InfoDone</p>
+          </div>
+          
+          <div class="info" style="color: #8B0000;">
+              <h1>TODO</h1>
+              <p>@InfoTodo</p>
+          </div>
+          
+          <div class="info" style="color: #DAA520;">
+              <h1>Notes</h1>
+              <p>@InfoNotes</p>
+          </div>
+          <div class="info" style="color: #DCDCDC;">
+              <h1>Credits</h1>
+              <p>@InfoCredits</p>
+          </div>
+
+      </div>
+  </div>
+</root>
+
+@code {
+      [Property, TextArea] public string InfoDone { get; set; } = "Hello World!";
+    [Property, TextArea] public string InfoTodo { get; set; } = "Hello World!";
+    [Property, TextArea] public string InfoNotes { get; set; } = "Hello World!";
+    [Property, TextArea] public string InfoCredits { get; set; } = "Hello World!";
+}
