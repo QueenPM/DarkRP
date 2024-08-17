@@ -197,7 +197,7 @@
               "UserData": {
                 "Title": "On Component Fixed Update",
                 "ReferencedComponentTypes": [
-                  "BasicMenu"
+                  "Menu"
                 ]
               },
               "Variables": [],
@@ -248,6 +248,9 @@
                 {
                   "Id": 8,
                   "Type": "scene.get",
+                  "Properties": {
+                    "T": "Menu"
+                  },
                   "UserData": {
                     "Position": "496,32"
                   }
@@ -695,6 +698,18 @@
             "PlayerPrefab": {
               "_type": "gameobject",
               "go": "2f0c5e5d-2852-453b-8cda-f6bb92e65678"
+            }
+          },
+          {
+            "__type": "Menu",
+            "__guid": "588e6159-3700-434f-8708-c327bca7d500",
+            "PlayerPrefab": {
+              "_type": "gameobject",
+              "prefab": "prefab/player.prefab"
+            },
+            "PrinterPrefab": {
+              "_type": "gameobject",
+              "prefab": "prefab/printer.prefab"
             }
           }
         ]

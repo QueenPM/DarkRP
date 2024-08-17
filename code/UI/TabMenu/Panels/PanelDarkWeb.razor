@@ -6,10 +6,10 @@
 @using Entity.Interactable.Props;
 @using Entity.Interactable.Printer;
 @using System.Text.RegularExpressions;
-@inherits PanelComponent;
+@using TabMenu;
 @attribute [StyleSheet( "../MenuStyle.scss" )]
 
-<root>
+<root style="width: 100%;">
   <div class="section">
       <div class="section-title">Dark Web</div>
       <div class="section-contents">
@@ -58,37 +58,34 @@
 
 @code {
 
-    // Printer Prefab Reference
-  [Property] GameObject PrinterPrefab { get; set; } 
+    public PanelData PanelData { get; set; }
+    public GameObject Player { get; set; }
+    int MaxPrinter = 5;
+    int CurrentPrinter = 0;
+    enum PrinterType { Bronze, Silver, Gold, Diamond }
 
-  // PlayerConnObjectConnObject Prefab Reference
-  [Property] GameObject PlayerPrefab { get; set; } 
-  int MaxPrinter = 5;
-  int CurrentPrinter = 0;
-  enum PrinterType { Bronze, Silver, Gold, Diamond }
+    // Generic method to purchase a printer
+    void BuyPrinter(PrinterType type, float price)
+    {
+        if (CurrentPrinter >= MaxPrinter)
+        {
+            Sound.Play("audio/error.sound");
+            return;
+        }
 
-  // Generic method to purchase a printer
-  void BuyPrinter(PrinterType type, float price)
-  {
-      if (CurrentPrinter >= MaxPrinter)
-      {
-          Sound.Play("audio/error.sound");
-          return;
-      }
+        var playerStats = PanelData.PlayerPrefab.Components.Get<Stats>();
+        if (!playerStats.RemoveMoney(price))
+        {
+            return; // Not enough money, error sound is handled elsewhere
+        }
 
-      var playerStats = PlayerPrefab.Components.Get<Stats>();
-      if (!playerStats.RemoveMoney(price))
-      {
-          return; // Not enough money, error sound is handled elsewhere
-      }
+        Vector3 playerPos = Player.Parent.Transform.World.Position + Player.Parent.Transform.Local.Forward * 50;
+        GameObject printer = PanelData.PrinterPrefab.Clone(playerPos);
 
-      Vector3 playerPos = GameObject.Parent.Transform.World.Position + GameObject.Parent.Transform.Local.Forward * 50;
-      GameObject printer = PrinterPrefab.Clone(playerPos);
+        // Set the printer type directly using a mapping if needed
+        printer.Components.Get<PrinterLogic>().SetPrinterType((PrinterLogic.PrinterType)type);
 
-      // Set the printer type directly using a mapping if needed
-      printer.Components.Get<PrinterLogic>().SetPrinterType((PrinterLogic.PrinterType)type);
-
-      printer.NetworkSpawn(); // It spawns on all clients
-      CurrentPrinter++;
-  }
+        printer.NetworkSpawn(); // It spawns on all clients
+        CurrentPrinter++;
+    }
 }

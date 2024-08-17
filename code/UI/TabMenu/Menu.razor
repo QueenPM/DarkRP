@@ -6,10 +6,9 @@
 @using Entity.Interactable.Props;
 @using Entity.Interactable.Printer;
 @using System.Text.RegularExpressions;
-@namespace Menu;
+@using TabMenu;
 @inherits PanelComponent;
-@attribute [StyleSheet( "./MenuStyle.scss" )]
-
+@attribute [StyleSheet( "/UI/TabMenu/SharedStyles.scss" )]
 <root>
     <div class="title">Tab Menu</div>
     <!-- TODO this should be modularized -->
@@ -37,26 +36,30 @@
         <div class="main-container">
             <!-- Dark Web Section -->
             @if ( CurrentPanel == Panel.DarkWeb){
-                @* <PageDarkWeb /> *@
+                <PanelDarkWeb />
                 return;
             }
-            @* <!-- Jobs Section -->
-            @if ( CurrentPage == Page.Jobs){
-                <PageJobs />
+            <!-- Jobs Section -->
+            @if ( CurrentPanel == Panel.Jobs){
+                <PanelJobs />
+                return;
             }
             <!-- Props Section -->
-            @if ( CurrentPage == Page.Props){
-                <PageProps />
-            }
-            <!-- Information Section -->
-            @if ( CurrentPage == Page.Info){
-                <PageInformation />
+            @if ( CurrentPanel == Panel.Props){
+                <PanelProps />
+                return;
             }
             <!-- Admin Section -->
-            @if ( CurrentPage == Page.Admin){
-                <PageAdmin />
-            } *@
-    </div>
+            @if ( CurrentPanel == Panel.Admin){
+                <PanelAdmin />
+                return;
+            }
+            <!-- Info Section -->
+            @if ( CurrentPanel == Panel.Info){
+                <PanelInfo />
+                return;
+            }
+        </div>
     </div>
 </root>
 
@@ -70,11 +73,13 @@
         Props
     }
     private Panel CurrentPanel = Panel.Info;
+
     // Printer Prefab Reference
     [Property] GameObject PrinterPrefab { get; set; } 
 
     // PlayerConnObjectConnObject Prefab Reference
     [Property] GameObject PlayerPrefab { get; set; } 
+    private static PanelData PanelData { get; set; }
 
     // The string used to query for packages 
     public string Query { get; set; } = "QuerryPlaceholder"; 
@@ -95,6 +100,9 @@
     protected override async void OnStart()
     {
         await FindPackage();
+
+        // Initialise the PanelProps
+        PanelData = new PanelData( PlayerPrefab, PrinterPrefab );
     }
     void ChangePage(Panel page)
     {

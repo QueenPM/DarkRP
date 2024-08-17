@@ -1,4 +1,4 @@
-BasicMenu {
+Menu {
 	pointer-events: all;
 	position: absolute;
 	top: 150;
@@ -33,7 +33,7 @@ BasicMenu {
 
 	.side-bar {
 		flex-direction: column;
-		width: 20vw;
+		width: 15vw;
 		height: 100%;
 	}
 
@@ -112,6 +112,8 @@ BasicMenu {
 		background-color: #1b1b2318;
 		padding: 10px;
 		height: 100%;
+		width: 100%;
+		flex:1;
 
 		.section-title {
 			width: 100%;
@@ -135,6 +137,7 @@ BasicMenu {
 			flex-wrap: wrap;
 			gap: 10px;
 			padding: 10px;
+			width: 100%;
 		}
 
 		.button {

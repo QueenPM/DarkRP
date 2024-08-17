@@ -1,6 +1,11 @@
 namespace TabMenu{
-      public struct PageProps {
+      public struct PanelData {
         public GameObject PrinterPrefab;
         public GameObject PlayerPrefab;
+
+        public PanelData(GameObject printerPrefab, GameObject playerPrefab) {
+            PrinterPrefab = printerPrefab;
+            PlayerPrefab = playerPrefab;
+        }
     }
 }
