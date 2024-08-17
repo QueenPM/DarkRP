@@ -8,4 +8,8 @@ namespace TabMenu{
             PlayerPrefab = playerPrefab;
         }
     }
+
+    interface IPanel {
+        void Show();
+    }
 }

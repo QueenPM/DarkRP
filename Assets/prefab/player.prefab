@@ -703,6 +703,16 @@
           {
             "__type": "Menu",
             "__guid": "588e6159-3700-434f-8708-c327bca7d500",
+            "__enabled": false,
+            "CurrentPanel": "Info",
+            "Panels": {
+              "admin": {
+                "_type": "component",
+                "component_id": "f9219ba4-91d2-4f1f-bfbc-9f97582d8ed2",
+                "go": "ad6ed4b5-d799-468d-a0e1-546cb904eaa8",
+                "component_type": "PanelAdmin"
+              }
+            },
             "PlayerPrefab": {
               "_type": "gameobject",
               "prefab": "prefab/player.prefab"
@@ -711,6 +721,10 @@
               "_type": "gameobject",
               "prefab": "prefab/printer.prefab"
             }
+          },
+          {
+            "__type": "PanelAdmin",
+            "__guid": "f9219ba4-91d2-4f1f-bfbc-9f97582d8ed2"
           }
         ]
       },

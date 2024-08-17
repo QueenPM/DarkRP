@@ -26,7 +26,7 @@
                     <button class="button @(CurrentPanel == Panel.Props ? "active" : "")" onclick=@(()=>ChangePage(Panel.Props))> <i class="icon">folder</i> Props </button> 
                 </div>
                 <div class="buttoncontainer">
-                    <button class="button @(CurrentPanel == Panel.Admin ? "active" : "")" onclick=@(()=>ChangePage(Panel.Admin))> <i class="icon">local_police</i> Admin Tools </button>
+                    <button class="button @(CurrentPanel == Panel.Admin ? "active" : "")" onclick=@(()=>ChangePanel("admin"))> <i class="icon">local_police</i> Admin Tools </button>
                     <button class="button @(CurrentPanel == Panel.Info ? "active" : "")" onclick=@(()=>ChangePage(Panel.Info))> <i class="icon">info</i> Information </button>
                     <button class="button" onclick=@GitHubLink style="color:#4078c0;"> <i class="icon">web</i> @GitHub </button>
                     <button class="button" onclick=@DiscordLink style="color:#7289da;"> <i class="icon">discord</i> @Discord </button>
@@ -49,11 +49,11 @@
                 <PanelProps />
                 return;
             }
-            <!-- Admin Section -->
+            @* <!-- Admin Section -->
             @if ( CurrentPanel == Panel.Admin){
                 <PanelAdmin />
                 return;
-            }
+            } *@
             <!-- Info Section -->
             @if ( CurrentPanel == Panel.Info){
                 <PanelInfo />
@@ -65,6 +65,9 @@
 
 @code
 {
+
+    [Property] public Dictionary<string, PanelComponent> Panels { get; set; } = new Dictionary<string, PanelComponent>();
+    [Property] public PanelComponent OpenedPanelComponent { get; set; }
     enum Panel {
         DarkWeb,
         Jobs,
@@ -72,7 +75,8 @@
         Admin,
         Props
     }
-    private Panel CurrentPanel = Panel.Info;
+
+    [Property] private Panel CurrentPanel = Panel.Info;
 
     // Printer Prefab Reference
     [Property] GameObject PrinterPrefab { get; set; } 
@@ -101,8 +105,11 @@
     {
         await FindPackage();
 
-        // Initialise the PanelProps
-        PanelData = new PanelData( PlayerPrefab, PrinterPrefab );
+        // Disable all panel elements if they arnt already
+        @* foreach (var panel in Panels)
+        {
+            panel.Value.Enabled = false;
+        } *@
     }
     void ChangePage(Panel page)
     {
@@ -110,6 +117,21 @@
         Sound.Play("audio/select.sound");
     }
 
+    void ChangePanel(string panelName)
+    {
+        if ( Panels.TryGetValue(panelName, out var panel))
+        {
+            // If its the same panel, do nothing
+            if ( OpenedPanelComponent == panel) return;
+            // Close the current panel
+            if ( OpenedPanelComponent is not null) OpenedPanelComponent.Enabled = false;
+
+            // Open the new panel
+            OpenedPanelComponent = panel;
+            panel.Enabled = true;
+            Sound.Play("audio/select.sound");
+        }
+    }
 
     // Discord and Github string
     string Discord = "Discord";
