@@ -76,6 +76,7 @@
         "__type": "GameSystems.Player.Stats",
         "__guid": "d72916ea-2bf4-4562-a6c0-091c46414a54",
         "Died": false,
+        "Doors": [],
         "FoodBase": 100,
         "HealthBase": 100,
         "MoneyBase": 1250,
@@ -119,6 +120,7 @@
         },
         "SalaryAmmount": 100,
         "SalaryTimer": 60,
+        "Starving": false,
         "StarvingTimer": 20
       },
       {
@@ -402,8 +404,8 @@
                   "Id": 20,
                   "Type": "property",
                   "Properties": {
-                    "_type": "Sandbox.GameObject",
-                    "_name": "Children"
+                    "_name": "Children",
+                    "_type": "Sandbox.GameObject"
                   },
                   "UserData": {
                     "Position": "432,160"
@@ -439,8 +441,8 @@
                   "Id": 26,
                   "Type": "call",
                   "Properties": {
-                    "_type": "Sandbox.GameObject",
                     "_name": "Destroy",
+                    "_type": "Sandbox.GameObject",
                     "_isStatic": false
                   },
                   "UserData": {
@@ -484,8 +486,8 @@
                   "Id": 30,
                   "Type": "call",
                   "Properties": {
-                    "_type": "Sandbox.GameObject",
                     "_name": "Destroy",
+                    "_type": "Sandbox.GameObject",
                     "_isStatic": false
                   },
                   "UserData": {
@@ -709,208 +711,10 @@
             }
           },
           {
-            "__type": "BasicMenu",
-            "__guid": "66371a07-fbb7-48a3-90fb-66f40db9152e",
-            "InfoCredits": "Sousou : Base GameMode \u002B Github Management | QueenPM : Chat Improvement \u002B Tab Menu UI Rework | HankKitts : Money 3D Models | Dancore: Entity system, code optimization | Bozy: Team/job system foundation | IRLadderGoat: Scoreboard foundation | Mangrogred : UI Tweak, Money pickup | Stefan : Job Improvement ",
-            "InfoDone": "Player and Camera Controller | Network Manager | Chat | Clothing | Ambient Audio | VOIP | Basic HUD | Money | Salary | Printer (90%) | Interaction System | Notifications | Entity and Props ",
-            "InfoNotes": "Everything that you see here is subject to change and placeholders. You can help to develop the project here ( https://github.com/sousou63/DarkRP ) or ( https://discord.gg/yBDk9Xr6VB )",
-            "InfoTodo": " Health | Stamina | Food | Jobs | Housing | Weapons | Persistence | Etc...",
-            "OnComponentDisabled": {
-              "__version": 7,
-              "__guid": "86ae15ed-598d-40f6-8392-45ff34f3d151",
-              "UserData": {
-                "Title": "On Component Disabled",
-                "ReferencedComponentTypes": []
-              },
-              "Variables": [],
-              "Nodes": [
-                {
-                  "Id": 0,
-                  "Type": "input"
-                },
-                {
-                  "Id": 1,
-                  "Type": "sound.play",
-                  "UserData": {
-                    "Position": "480,64"
-                  }
-                },
-                {
-                  "Id": 2,
-                  "Type": "property",
-                  "Properties": {
-                    "_type": {
-                      "$type": "Nested",
-                      "DeclaringType": "Sandbox.GameObject",
-                      "Name": "NetworkAccessor"
-                    },
-                    "_name": "IsOwner"
-                  },
-                  "UserData": {
-                    "Position": "-16,80"
-                  }
-                },
-                {
-                  "Id": 3,
-                  "Type": "if",
-                  "UserData": {
-                    "Position": "256,0"
-                  }
-                },
-                {
-                  "Id": 4,
-                  "Type": "property",
-                  "Properties": {
-                    "_type": "Sandbox.GameObject",
-                    "_name": "Network"
-                  },
-                  "UserData": {
-                    "Position": "-208,80"
-                  }
-                }
-              ],
-              "Links": [
-                {
-                  "SrcId": 3,
-                  "SrcName": "true",
-                  "DstId": 1,
-                  "DstName": "_signal"
-                },
-                {
-                  "SrcId": 0,
-                  "SrcName": "_target",
-                  "DstId": 1,
-                  "DstName": "_this"
-                },
-                {
-                  "Value": "sounds/kenney/ui/ui.navigate.back.sound",
-                  "DstId": 1,
-                  "DstName": "soundEvent"
-                },
-                {
-                  "SrcId": 4,
-                  "SrcName": "_result",
-                  "DstId": 2,
-                  "DstName": "_target"
-                },
-                {
-                  "SrcId": 0,
-                  "SrcName": "_signal",
-                  "DstId": 3,
-                  "DstName": "_signal"
-                },
-                {
-                  "SrcId": 2,
-                  "SrcName": "_result",
-                  "DstId": 3,
-                  "DstName": "condition"
-                },
-                {
-                  "SrcId": 0,
-                  "SrcName": "_target",
-                  "DstId": 4,
-                  "DstName": "_target"
-                }
-              ]
-            },
-            "OnComponentEnabled": {
-              "__version": 7,
-              "__guid": "77d47dbb-f4ce-44f1-94d3-54578333f7ec",
-              "UserData": {
-                "Title": "On Component Enabled",
-                "ReferencedComponentTypes": []
-              },
-              "Variables": [],
-              "Nodes": [
-                {
-                  "Id": 0,
-                  "Type": "input"
-                },
-                {
-                  "Id": 1,
-                  "Type": "sound.play",
-                  "UserData": {
-                    "Position": "464,64"
-                  }
-                },
-                {
-                  "Id": 2,
-                  "Type": "property",
-                  "Properties": {
-                    "_type": {
-                      "$type": "Nested",
-                      "DeclaringType": "Sandbox.GameObject",
-                      "Name": "NetworkAccessor"
-                    },
-                    "_name": "IsOwner"
-                  },
-                  "UserData": {
-                    "Position": "-16,80"
-                  }
-                },
-                {
-                  "Id": 3,
-                  "Type": "if",
-                  "UserData": {
-                    "Position": "256,-0"
-                  }
-                },
-                {
-                  "Id": 4,
-                  "Type": "property",
-                  "Properties": {
-                    "_type": "Sandbox.GameObject",
-                    "_name": "Network"
-                  },
-                  "UserData": {
-                    "Position": "-208,80"
-                  }
-                }
-              ],
-              "Links": [
-                {
-                  "SrcId": 3,
-                  "SrcName": "true",
-                  "DstId": 1,
-                  "DstName": "_signal"
-                },
-                {
-                  "SrcId": 0,
-                  "SrcName": "_target",
-                  "DstId": 1,
-                  "DstName": "_this"
-                },
-                {
-                  "Value": "sounds/kenney/ui/ui.navigate.forward.sound",
-                  "DstId": 1,
-                  "DstName": "soundEvent"
-                },
-                {
-                  "SrcId": 4,
-                  "SrcName": "_result",
-                  "DstId": 2,
-                  "DstName": "_target"
-                },
-                {
-                  "SrcId": 0,
-                  "SrcName": "_signal",
-                  "DstId": 3,
-                  "DstName": "_signal"
-                },
-                {
-                  "SrcId": 2,
-                  "SrcName": "_result",
-                  "DstId": 3,
-                  "DstName": "condition"
-                },
-                {
-                  "SrcId": 0,
-                  "SrcName": "_target",
-                  "DstId": 4,
-                  "DstName": "_target"
-                }
-              ]
-            },
+            "__type": "Menu",
+            "__guid": "dc1efa06-bd06-4bcb-a05d-047088f43870",
+            "CurrentPanel": "Info",
+            "Panels": {},
             "PlayerPrefab": {
               "_type": "gameobject",
               "prefab": "prefab/player.prefab"
@@ -919,10 +723,6 @@
               "_type": "gameobject",
               "prefab": "prefab/printer.prefab"
             }
-          },
-          {
-            "__type": "PanelAdmin",
-            "__guid": "f9219ba4-91d2-4f1f-bfbc-9f97582d8ed2"
           }
         ]
       },
@@ -1105,8 +905,8 @@
                   "Id": 4,
                   "Type": "property",
                   "Properties": {
-                    "_type": "Sandbox.Component",
-                    "_name": "Enabled"
+                    "_name": "Enabled",
+                    "_type": "Sandbox.Component"
                   },
                   "UserData": {
                     "Position": "720,-16"
@@ -1171,8 +971,8 @@
                   "Id": 23,
                   "Type": "call",
                   "Properties": {
-                    "_type": "Sandbox.Component",
                     "_name": "Reset",
+                    "_type": "Sandbox.Component",
                     "_isStatic": false
                   },
                   "UserData": {

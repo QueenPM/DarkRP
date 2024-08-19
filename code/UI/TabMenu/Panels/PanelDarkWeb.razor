@@ -2,12 +2,9 @@
 @using Sandbox.UI;
 @using GameSystems;
 @using GameSystems.Player;
-@using System.Threading.Tasks;
 @using Entity.Interactable.Props;
 @using Entity.Interactable.Printer;
-@using System.Text.RegularExpressions;
 @using TabMenu;
-@attribute [StyleSheet( "../MenuStyle.scss" )]
 
 <root style="width: 100%;">
   <div class="section">
@@ -57,12 +54,24 @@
 </root>
 
 @code {
-
     public PanelData PanelData { get; set; }
     public GameObject Player { get; set; }
     int MaxPrinter = 5;
     int CurrentPrinter = 0;
     enum PrinterType { Bronze, Silver, Gold, Diamond }
+
+	protected override void OnAfterTreeRender(bool firstTime)
+	{
+		base.OnAfterTreeRender(firstTime);
+        if (firstTime)
+        {
+            Player = PanelData.PlayerPrefab;
+            if ( Player is null )
+            {
+                Log.Warning("Player prefab is null");
+            }
+        }
+	}
 
     // Generic method to purchase a printer
     void BuyPrinter(PrinterType type, float price)
