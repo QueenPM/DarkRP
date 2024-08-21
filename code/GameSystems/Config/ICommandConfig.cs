@@ -10,6 +10,10 @@ namespace GameSystems.Config
 		string Name { get; }
 		string Description { get; }
 		PermissionLevel PermissionLevel { get; }
-		bool CommandFunction( GameObject player, Scene scene, string[] args );
+
+		bool ClientOnly { get; }
+
+		[Broadcast]
+		void CommandFunction( GameObject player, Scene scene, string[] args );
 	}
 }

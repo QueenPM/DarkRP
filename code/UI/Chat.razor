@@ -255,7 +255,7 @@
                 // Find the player executing the command
                 var player = GameController.GetPlayerByConnectionID( Rpc.Caller.Id );
                 if ( player == null ) return false;
-                executeCommand(command, player.GameObject, args);
+                ConfigManager.Commands.ExecuteCommand(command,player.GameObject,Scene, args);
                 return true;
             }catch (Exception e)
             {
@@ -265,12 +265,5 @@
         }
 
         return false;
-    }
-
-    [Broadcast]
-    public void executeCommand(string command, GameObject player, string[] args)
-    {
-        if (ConfigManager == null) return;
-        ConfigManager.Commands.ExecuteCommand(command,player, Scene, args);
     }
 }

@@ -15,6 +15,7 @@ namespace GameSystems.Config
 						name: "clear",
 						description: "Clears the chat",
 						permissionLevel: PermissionLevel.User,
+						clientOnly: true,
 						commandFunction: (player, scene, args) =>
 						{
 							var playerStats = player.Components.Get<Stats>();
@@ -34,6 +35,7 @@ namespace GameSystems.Config
 						name: "lorem",
 						description: "Spams the chat with lorem ipsum X times.",
 						permissionLevel: PermissionLevel.User,
+						clientOnly: true,
 						commandFunction: (player, scene, args) =>
 						{
 								// Get the player stats
@@ -48,6 +50,7 @@ namespace GameSystems.Config
 						name: "givemoney",
 						description: "Gives the player money",
 						permissionLevel: PermissionLevel.Admin,
+						clientOnly: false,
 						commandFunction: (player, scene, args) =>
 						{
 								// Get the player stats
@@ -90,6 +93,7 @@ namespace GameSystems.Config
 						name: "setmoney",
 						description: "Set a player's money",
 						permissionLevel: PermissionLevel.Admin,
+						clientOnly: false,
 						commandFunction: (player, scene, args) =>
 						{
 								// Get the player stats
@@ -132,6 +136,7 @@ namespace GameSystems.Config
 						name: "setrank",
 						description: "Set a player's rank",
 						permissionLevel: PermissionLevel.SuperAdmin,
+						clientOnly: false,
 						commandFunction: (player, scene, args) =>
 						{
 								// Get the player stats
@@ -183,6 +188,7 @@ namespace GameSystems.Config
 						name: "noclip",
 						description: "Enable noclip on a player",
 						permissionLevel: PermissionLevel.Admin,
+						clientOnly: false,
 						commandFunction: (player, scene, args) =>
 						{
 							
@@ -216,6 +222,7 @@ namespace GameSystems.Config
 						name: "dropmoney",
 						description: "Drops the specified amount of money.",
 						permissionLevel: PermissionLevel.User,
+						clientOnly: true,
 						commandFunction: (player, scene, args) =>
 						{
 								// Get the player stats
@@ -295,6 +302,7 @@ namespace GameSystems.Config
 						name: "tp",
 						description: "Teleports a player to where you are looking.",
 						permissionLevel: PermissionLevel.Admin,
+						clientOnly: false,
 						commandFunction: (player, scene, args) =>
 						{
 								// Get the player stats
@@ -388,11 +396,12 @@ namespace GameSystems.Config
 			commandNames.Add("help");
 			return commandNames.ToArray();
 		}
-		public bool ExecuteCommand(string commandName, GameObject player, Scene scene, string[] args)
+
+		public void ExecuteCommand(string commandName, GameObject player, Scene scene, string[] args)
 		{
 			// Get the PlayerStats component. This is required for all players. Verifies the player is a player.
 			var playerStats = player.Components.Get<Stats>();
-			if ( playerStats == null ) return false;
+			if ( playerStats == null ) return;
 			try
 			{
 
@@ -402,33 +411,38 @@ namespace GameSystems.Config
 					var commandNames = string.Join( ", ", GetCommandNames().Select( name => "/" + name ) );
 
 					playerStats.SendMessage( $"Available commands: {commandNames}" );
-					return true;
+					return;
 				}
 
 				// Get the player details
 				var details = playerStats.GetPlayerDetails();
-				if ( details == null ) return false;
+				if ( details == null ) return;
 
 				var command = GetCommand( commandName );
 
 				if ( !details.CheckPermission(command.PermissionLevel) )
 				{
 					playerStats.SendMessage( "You do not have permission to execute this command." );
-					return false;
+					return;
 				}
 
 				Log.Info( $"Executing command \"{commandName}\"." );
-				if ( command.CommandFunction( player, scene, args ) == false )
+
+				if ( command.ClientOnly)
 				{
-					return false;
+					using ( Rpc.FilterInclude( c => c.Id == playerStats?.GetPlayerDetails()?.Connection.Id ) )
+					{
+						command.CommandFunction( player, scene, args );
+					}
+				}else{
+					command.CommandFunction( player, scene, args );
 				}
-				return true;
 			}
 			catch ( Exception e )
 			{
 				Log.Error( $"Failed to execute command \"{commandName}\": {e.Message}" );
 				playerStats.SendMessage( $"Failed to execute command \"{commandName}\"." );
-				return false;
+				return;
 			}
 		}
 	}

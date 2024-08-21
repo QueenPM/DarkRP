@@ -28,6 +28,11 @@ namespace GameSystems.Config {
 		private readonly Func<GameObject, Scene, string[], bool> commandFunction;
 
 		/// <summary>
+		/// Set true if the command should only be executed on the client.
+		/// </summary>
+		public bool ClientOnly { get; }
+
+		/// <summary>
 		/// Initializes a new instance of the Command class.
 		/// </summary>
 		/// <param name="name">The name of the command.</param>
@@ -37,17 +42,18 @@ namespace GameSystems.Config {
 		/// <exception cref="ArgumentNullException">
 		/// Thrown when <paramref name="name"/>, <paramref name="description"/>, or <paramref name="commandFunction"/> is null.
 		/// </exception>
-		public Command( string name, string description, PermissionLevel permissionLevel, Func<GameObject, Scene, string[], bool> commandFunction )
+		public Command( string name, string description, PermissionLevel permissionLevel, bool clientOnly, Func<GameObject, Scene, string[], bool> commandFunction )
 		{
 			Name = name.ToLowerInvariant() ?? throw new ArgumentNullException( nameof( name ) );
 			Description = description ?? throw new ArgumentNullException( nameof( description ) );
 			PermissionLevel = permissionLevel;
 			this.commandFunction = commandFunction ?? throw new ArgumentNullException( nameof( commandFunction ) );
+			ClientOnly = clientOnly;
 		}
 
 		/// <summary>
 		/// Executes the command function with the provided arguments.
 		/// </summary>
-		public bool CommandFunction( GameObject player, Scene scene, string[] args = null ) => commandFunction( player, scene, args );
+		public void CommandFunction( GameObject player, Scene scene, string[] args = null ) => commandFunction( player, scene, args );
 	}
 }
