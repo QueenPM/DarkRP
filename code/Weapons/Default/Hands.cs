@@ -2,16 +2,17 @@
 using GameSystems.Player;
 using Sandbox.GameSystems.Player;
 using Scenebox;
+using static Sandbox.PhysicsContact;
 
-namespace Sandbox.Weapons.Default;
-
-// Reference: https://github.com/CarsonKompon/sbox-scenebox-2/blob/main/code/Weapons/Physgun.cs
-// TODO: Tie into inventory https://github.com/CarsonKompon/sbox-scenebox-2
-// TODO: Precision mode (For props) - This is to replicate Physgun, let's you adjust hold distance, snapping, etc.
-// TODO: Add server tag to prevent people from stealing your held items
-public class Hands : Weapon
+namespace Sandbox.Weapons.Default
 {
-	[Property] public string GrabbableTag { get; set; } = "grab";
+	// Reference: https://github.com/CarsonKompon/sbox-scenebox-2/blob/main/code/Weapons/Physgun.cs
+	// TODO: Tie into inventory https://github.com/CarsonKompon/sbox-scenebox-2
+	// TODO: Precision mode (For props) - This is to replicate Physgun, let's you adjust hold distance, snapping, etc.
+	// TODO: Add server tag to prevent people from stealing your held items
+	public class Hands : Weapon
+	{
+		[Property] public string GrabbableTag { get; set; } = "grab";
 
 	[Property] private float InteractRange { get; set; } = 150f;
 	[Property] private float ThrowForce { get; set; } = 450f;
@@ -119,11 +120,11 @@ public class Hands : Weapon
 		// Starting position of the line (camera position)
 		var start = _camera.Transform.Position;
 
-		// Direction of the line (the direction the camera is facing)
-		var direction = _camera.Transform.World.Forward;
+			// Direction of the line (the direction the camera is facing)
+			var direction = _camera.Transform.World.Forward;
 
-		// Calculate the end position based on direction and interact range
-		var end = start + direction * InteractRange;
+			// Calculate the end position based on direction and interact range
+			var end = start + direction * InteractRange;
 
 		// Perform a line trace (raycast) to detect objects in the line of sight ( raycast ignore the player )
 		var tr = Scene.Trace.Ray( start, end )
@@ -171,8 +172,9 @@ public class Hands : Weapon
 
 		_heldCenter = bounds.Center;
 
-		_lastPickupTime = RealTime.Now;
-	}
+			_lastPickupTime = RealTime.Now;
+
+		}
 
 	public void Release( float throwingForce = 0 )
 	{
@@ -197,9 +199,9 @@ public class Hands : Weapon
 		_heldBody = null;
 	}
 
-	private void RotateHeldObject()
-	{
-		Player.EyesLocked = true;
+		private void RotateHeldObject()
+		{
+			Player.EyesLocked = true;
 
 		var input = Input.MouseDelta * RotateSpeed;
 
@@ -244,13 +246,45 @@ public class Hands : Weapon
 		return a + delta * t;
 	}
 
-	private void ResetRotationHeldObject()
-	{
-		_heldRotation = Rotation.Identity;
-	}
+		private void ResetRotationHeldObject()
+		{
+			_heldRotation = Rotation.Identity;
+		}
 
-	private void UnlockHeldObject()
-	{
-		Player.EyesLocked = false;
+		private void UnlockHeldObject()
+		{
+			Player.EyesLocked = false;
+		}
+
+		private void AttemptFreeze()
+		{
+			if ( _heldBody.BodyType == PhysicsBodyType.Dynamic )
+			{
+				_heldBody.BodyType = PhysicsBodyType.Static;
+				_heldBody.Velocity = 0;
+				_heldBody.AngularVelocity = 0;
+				_heldBody.Sleeping = true;
+				Release();
+
+				Sound.Play( "audio/physiclock.sound" );
+				Log.Info( "props is freeze" );
+			}
+
+		}
+
+		private void AttemptUnFreeze()
+		{
+			if ( _heldBody.BodyType == PhysicsBodyType.Static )
+			{
+
+				_heldBody.BodyType = PhysicsBodyType.Dynamic;
+				//_heldBody.Velocity = 0;
+				//_heldBody.AngularVelocity = 0;
+
+				Sound.Play( "audio/physiclock.sound" );
+				Log.Info( "props is unfreeze" );
+			}
+
+		}
 	}
 }
