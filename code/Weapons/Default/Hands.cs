@@ -13,26 +13,26 @@ public class Hands : Weapon
 {
 	[Property] public string GrabbableTag { get; set; } = "grab";
 
-    [Property] private float InteractRange { get; set; } = 150f;
-    [Property] private float ThrowForce { get; set; } = 450f;
-    [Property] private float MaxReleaseVelocity { get; set; } = 500f;
-    [Property] private float RotateSpeed { get; set; } = 1f;
+	[Property] private float InteractRange { get; set; } = 150f;
+	[Property] private float ThrowForce { get; set; } = 450f;
+	[Property] private float MaxReleaseVelocity { get; set; } = 500f;
+	[Property] private float RotateSpeed { get; set; } = 1f;
 
-    [Property] private float HoldDistance { get; set; } = 55f;
-    private float _heldDistance;
-    private Rotation _heldRotation = Rotation.Identity;
+	[Property] private float HoldDistance { get; set; } = 55f;
+	private float _heldDistance;
+	private Rotation _heldRotation = Rotation.Identity;
 
-    // References
-    [Property] private GameSystems.Player.Player Player { get; set; }
-    private CameraComponent _camera;
-	
+	// References
+	[Property] private GameSystems.Player.Player Player { get; set; }
+	private CameraComponent _camera;
+
 	private GameObject _held;
 	private PhysicsBody _heldBody;
 	private Vector3 _heldCenter;
-	
+
 	private float _lastPickupTime;
 	private const float DeltaPickupTime = 0.20f;
-	
+
 	public bool IsHolding() => _held != null;
 
 	protected override void OnStart()
@@ -42,32 +42,42 @@ public class Hands : Weapon
 			Enabled = false;
 			return;
 		}
-		
+
 		_camera = Scene.Camera;
 	}
-	
+
 	protected override void OnUpdate()
 	{
 		if ( IsHolding() )
 		{
 			// Rotate the object if the player is holding down the rotate button
-			if ( Input.Down( "reload" ) ) {
+			if ( Input.Down( "reload" ) )
+			{
 				RotateHeldObject();
-			} else if (Input.Released("reload")) {
+			}
+			else if ( Input.Released( "reload" ) )
+			{
 				UnlockHeldObject();
-			} else if ( Input.Down( "attack3" ) ) {
+			}
+			else if ( Input.Down( "attack3" ) )
+			{
 				ResetRotationHeldObject();
-			} else if (Input.Down("attack2")) {
-				Release(ThrowForce);
-			} else if (Input.Released("attack1") && RealTime.Now - _lastPickupTime > DeltaPickupTime  ) {
+			}
+			else if ( Input.Down( "attack2" ) )
+			{
+				Release( ThrowForce );
+			}
+			else if ( Input.Released( "attack1" ) && RealTime.Now - _lastPickupTime > DeltaPickupTime )
+			{
 				Release();
 			}
-		} else if ( Input.Down( "attack1" ) )
+		}
+		else if ( Input.Down( "attack1" ) )
 		{
 			AttemptGrab();
 		}
 	}
-	
+
 	protected override void OnFixedUpdate()
 	{
 		if ( _held == null )
@@ -80,29 +90,30 @@ public class Hands : Weapon
 			Release();
 			return;
 		}
-		
+
 		// Calculate the offset from the object's position to its center
 		var centerOffset = _heldBody.MassCenter - _heldBody.Position;
 
 		// Calculate the target position, adjusting for the center offset
-		var holdPosition =  _camera.Transform.Position + _camera.Transform.World.Forward * _heldDistance - centerOffset;
-		
+		var holdPosition = _camera.Transform.Position + _camera.Transform.World.Forward * _heldDistance - centerOffset;
+
 		// Check if the object is too far away from the hold position
-		var heldDistance = Vector3.DistanceBetween(_held.Transform.Position, holdPosition);
-		if (heldDistance > InteractRange) { 
-			Release(); 
+		var heldDistance = Vector3.DistanceBetween( _held.Transform.Position, holdPosition );
+		if ( heldDistance > InteractRange )
+		{
+			Release();
 			return;
 		}
 
 		var velocity = _heldBody.Velocity;
-		Vector3.SmoothDamp(_heldBody.Position, holdPosition, ref velocity, 0.075f, Time.Delta);
+		Vector3.SmoothDamp( _heldBody.Position, holdPosition, ref velocity, 0.075f, Time.Delta );
 		_heldBody.Velocity = velocity;
 
 		var angularVelocity = _heldBody.AngularVelocity;
 		Rotation.SmoothDamp( _heldBody.Rotation, _heldRotation, ref angularVelocity, 0.075f, Time.Delta );
 		_heldBody.AngularVelocity = angularVelocity;
 	}
-	
+
 	private void AttemptGrab()
 	{
 		// Starting position of the line (camera position)
@@ -120,12 +131,12 @@ public class Hands : Weapon
 			.IgnoreGameObject( GameObject )
 			.WithTag( GrabbableTag )
 			.Run();
-		
+
 		if ( !tr.Hit || !tr.GameObject.IsValid() || tr.GameObject.Tags.Has( "map" ) || tr.StartedSolid ) return;
-		
+
 		var rootObject = tr.GameObject.Root;
 		var body = tr.Body;
-		
+
 		if ( !body.IsValid() )
 		{
 			if ( rootObject.IsValid() )
@@ -139,49 +150,49 @@ public class Hands : Weapon
 		}
 
 		if ( !body.IsValid() ) return;
-		
+
 		// Don't move keyframed
 		if ( body.BodyType == PhysicsBodyType.Keyframed ) return;
 
-		Grab(tr.GameObject, tr.Body);
+		Grab( tr.GameObject, tr.Body );
 	}
 
 	public void Grab( GameObject target, PhysicsBody targetBody )
 	{
 		target.Network.TakeOwnership();
-		
+
 		var bounds = target.GetBounds();
 		var boundsExtents = bounds.Extents;
-		_heldDistance = HoldDistance + Math.Max(Math.Max(boundsExtents.x, boundsExtents.y), boundsExtents.z);
+		_heldDistance = HoldDistance + Math.Max( Math.Max( boundsExtents.x, boundsExtents.y ), boundsExtents.z );
 		_heldRotation = target.Transform.Rotation;
-		
+
 		_held = target;
 		_heldBody = targetBody;
-		
+
 		_heldCenter = bounds.Center;
 
 		_lastPickupTime = RealTime.Now;
 	}
 
-	public void Release(float throwingForce = 0)
+	public void Release( float throwingForce = 0 )
 	{
 		UnlockHeldObject();
-		
+
 		if ( _heldBody.IsValid() )
 		{
 			_heldBody.AutoSleep = true;
-			
+
 			// Cap the velocity
 			var currentVelocity = _heldBody.Velocity;
-			if (currentVelocity.Length > MaxReleaseVelocity)
+			if ( currentVelocity.Length > MaxReleaseVelocity )
 			{
 				currentVelocity = currentVelocity.Normal * MaxReleaseVelocity;
 				_heldBody.Velocity = currentVelocity;
 			}
-			
-			_heldBody.ApplyImpulse(_camera.Transform.World.Forward * _heldBody.Mass * throwingForce);
+
+			_heldBody.ApplyImpulse( _camera.Transform.World.Forward * _heldBody.Mass * throwingForce );
 		}
-		
+
 		_held = null;
 		_heldBody = null;
 	}
@@ -191,18 +202,46 @@ public class Hands : Weapon
 		Player.EyesLocked = true;
 
 		var input = Input.MouseDelta * RotateSpeed;
-    
+
 		var eyeRot = Player.EyeAngles.ToRotation();
-    
+
 		// Create rotation around local X and Y axes
-		var rotX = Rotation.FromAxis(eyeRot * Vector3.Right, input.y);
-		var rotY = Rotation.FromAxis(eyeRot * Vector3.Up, input.x);
-    
+		var rotX = Rotation.FromAxis( eyeRot * Vector3.Right, input.y );
+		var rotY = Rotation.FromAxis( eyeRot * Vector3.Up, input.x );
+
 		// Combine rotations
 		var newRot = rotY * rotX;
-    
+
 		// Apply to current held rotation
 		_heldRotation = newRot * _heldRotation;
+
+		if ( Input.Down( "run" ) )
+		{
+			_heldRotation = SnapRotationToNearest45Degrees( _heldRotation );
+		}
+	}
+
+	private Rotation SnapRotationToNearest45Degrees( Rotation rotation )
+	{
+		var angles = rotation.Angles();
+
+		angles.pitch = SnapAngleToNearest45( angles.pitch );
+		angles.yaw = SnapAngleToNearest45( angles.yaw );
+		angles.roll = SnapAngleToNearest45( angles.roll );
+
+		return Rotation.From( angles );
+	}
+
+	private float SnapAngleToNearest45( float angle )
+	{
+		float snappedAngle = MathF.Round( angle / 45f ) * 45f;
+		return LerpAngle( angle, snappedAngle, 0.25f );
+	}
+
+	private float LerpAngle( float a, float b, float t )
+	{
+		float delta = ((b - a + 180f) % 360f) - 180f;
+		return a + delta * t;
 	}
 
 	private void ResetRotationHeldObject()
