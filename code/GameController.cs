@@ -30,7 +30,8 @@ namespace GameSystems
 		// TODO: YOU CAN'T SYNC COMPLEX OBJECTS
 		[HostSync] public NetDictionary<Guid, NetworkPlayer> Players { get; set; } = new();
 
-		[HostSync] public NetDictionary<string, UserGroup> UserGroups { get; set; } = new()
+		[HostSync]
+		public NetDictionary<string, UserGroup> UserGroups { get; set; } = new()
 		{
 			{ "user", new UserGroup( "user", "User", PermissionLevel.User, Color.White ) },
 			{ "moderator", new UserGroup( "moderator", "Moderator", PermissionLevel.Moderator, Color.Yellow ) },
@@ -66,7 +67,7 @@ namespace GameSystems
 		public void AddPlayer( GameObject player, Connection connection )
 		{
 			// Temporary fix for players who stop connecting
-			if(connection.SteamId == 0)
+			if ( connection.SteamId == 0 )
 			{
 				Log.Info( $"Player {connection.Id} has no steam id, skipping." );
 				return;
@@ -165,13 +166,19 @@ namespace GameSystems
 			}
 			return null;
 		}
-
+		/// <summary>
+		/// Returns the player with a name using a case-insensitive search.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public NetworkPlayer GetPlayerByName( string name )
 		{
-			return Players.Values.FirstOrDefault(
-				player => player.Connection.DisplayName.StartsWith( name, StringComparison.OrdinalIgnoreCase ) );
-		}
+			string sanitizedInputName = name.Replace( " ", string.Empty );
 
+			return Players.Values.FirstOrDefault(
+					player => player.Connection.DisplayName.Replace( " ", string.Empty )
+							.StartsWith( sanitizedInputName, StringComparison.OrdinalIgnoreCase ) );
+		}
 		public NetworkPlayer GetMe()
 		{
 			return Players[Connection.Local.Id];
