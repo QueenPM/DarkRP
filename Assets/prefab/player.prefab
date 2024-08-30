@@ -160,7 +160,7 @@
           "go": "2f0c5e5d-2852-453b-8cda-f6bb92e65678",
           "component_type": "Player"
         },
-        "RotateSpeed": 1,
+        "RotateSpeed": 0.5,
         "ThrowForce": 450
       },
       {
