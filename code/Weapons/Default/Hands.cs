@@ -51,11 +51,11 @@ public class Hands : Weapon
 		if ( IsHolding() )
 		{
 			// Rotate the object if the player is holding down the rotate button
-			if ( Input.Down( "attack3" ) ) {
+			if ( Input.Down( "reload" ) ) {
 				RotateHeldObject();
-			} else if (Input.Released("attack3")) {
+			} else if (Input.Released("reload")) {
 				UnlockHeldObject();
-			} else if ( Input.Down( "reload" ) ) {
+			} else if ( Input.Down( "attack3" ) ) {
 				ResetRotationHeldObject();
 			} else if (Input.Down("attack2")) {
 				Release(ThrowForce);
