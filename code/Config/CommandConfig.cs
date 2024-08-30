@@ -392,7 +392,6 @@ namespace GameSystems.Config
 			return commandNames.ToArray();
 		}
 
-		[Broadcast( NetPermission.HostOnly )]
 		public void ExecuteCommand(string commandName, GameObject player, Scene scene, string[] args)
 		{
 			// Get the PlayerStats component. This is required for all players. Verifies the player is a player.
