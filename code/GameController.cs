@@ -65,6 +65,13 @@ namespace GameSystems
 		// This could probably be put in the network controller/helper.
 		public void AddPlayer( GameObject player, Connection connection )
 		{
+			// Temporary fix for players who stop connecting
+			if(connection.SteamId == 0)
+			{
+				Log.Info( $"Player {connection.Id} has no steam id, skipping." );
+				return;
+			}
+
 			Log.Info( $"Adding player: {connection.Id} {connection.DisplayName}" );
 			try
 			{
